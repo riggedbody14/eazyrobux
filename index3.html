@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robux Transfer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Roblox Style Overrides --- */
+        body {
+            background-color: #e3e3e3; /* Roblox light gray background */
+            color: #393b3d; /* Roblox dark text color */
+            overflow: hidden;
+        }
+
+        /* --- Font Assignment --- */
+        .font-display { font-family: 'Fredoka One', cursive; }
+        .font-ui { font-family: 'Source Sans Pro', sans-serif; }
+
+        /* --- Card & Animation Styling --- */
+        .card-container {
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 1s ease-in-out;
+        }
+
+        .robux-icon {
+            width: 80px;
+            height: auto;
+        }
+
+        /* State for Scene 1 when it's flying away */
+        .fly-out {
+            opacity: 0;
+            transform: translateY(120vh) rotate(25deg) scale(0.8);
+        }
+        
+        /* Initial state for Scene 2 before it appears */
+        .fly-in-initial {
+            opacity: 0;
+            transform: translateY(-120vh) rotate(-25deg) scale(0.8);
+        }
+
+        /* --- Slider Customization --- */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 24px; height: 24px;
+            background: #ffffff; border: 2px solid #00a2ff;
+            border-radius: 50%; cursor: pointer; margin-top: -8px;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 24px; height: 24px;
+            background: #ffffff; border: 2px solid #00a2ff;
+            border-radius: 50%; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 8px; cursor: pointer;
+            background: #bcc3c8; border-radius: 5px; border: 1px solid #979797;
+        }
+        input[type=range]::-moz-range-track {
+            width: 100%; height: 8px; cursor: pointer;
+            background: #bcc3c8; border-radius: 5px; border: 1px solid #979797;
+        }
+        
+        /* Simple message box for validation */
+        #message-box {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen font-ui">
+
+    <div class="relative w-full max-w-md p-4 h-[580px]">
+        <!-- Scene 1: Input Form -->
+        <div id="scene1" class="card-container absolute inset-0">
+            <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-lg h-full flex flex-col justify-center">
+                <div class="text-center mb-8">
+                    <!-- Roblox Icon -->
+                    <img src="Robux_2019_Logo_gold.svg (1).png" alt="Robux Logo" class="mx-auto mb-4 robux-icon">
+                    <h1 class="font-display text-5xl text-gray-800">Robux Transfer</h1>
+                    <p class="text-gray-500 mt-2 text-lg">Enter details to proceed</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="nickname" class="block mb-2 text-sm font-semibold text-gray-600">Recipient's Username</label>
+                    <input type="text" id="nickname" class="font-ui bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-3 placeholder-gray-500" placeholder="e.g., CoolBuilder_123" required>
+                </div>
+
+                <div class="mb-6">
+                    <label for="robux-slider" class="block mb-2 text-sm font-semibold text-gray-600">Amount</label>
+                    <div class="flex items-center space-x-4">
+                        <input id="robux-slider" type="range" min="10" max="10000" value="800" step="10" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
+                        <span id="slider-value" class="font-display text-3xl text-blue-600 w-32 text-center flex-shrink-0">800</span>
+                    </div>
+                </div>
+
+                <button id="transfer-btn" class="font-display w-full bg-blue-500 hover:bg-blue-600 text-white text-2xl py-3 px-4 rounded-md transition duration-200 ease-in-out shadow-md">
+                    Transfer Now!
+                </button>
+
+                <div id="message-box" class="mt-4 text-center text-red-600 font-semibold opacity-0">
+                    Please enter a username.
+                </div>
+            </div>
+        </div>
+
+        <!-- Scene 2: Profile & Counter -->
+        <div id="scene2" class="card-container absolute inset-0 fly-in-initial">
+            <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-lg text-center h-full flex flex-col justify-around">
+                
+                <div> <!-- Profile Section -->
+                    <img id="profile-pic" src="https://placehold.co/128x128/e3e3e3/393b3d?text=R" alt="Profile Picture" class="w-32 h-32 mx-auto rounded-full border-4 border-blue-400 shadow-md">
+                    <h2 id="profile-nickname" class="font-display mt-4 text-4xl text-gray-800"></h2>
+                    <p class="text-gray-500 text-lg">is receiving</p>
+                </div>
+
+                <div> <!-- Counter Section -->
+                    <div id="counter" class="font-display text-8xl font-black text-blue-500 tracking-tighter">0</div>
+                    <div class="font-display text-3xl text-gray-500 -mt-2">ROBUX</div>
+                </div>
+
+                 <button id="back-btn" class="font-display w-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-2xl py-3 px-4 rounded-md transition duration-200 ease-in-out">
+                     New Transfer
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Element References ---
+        const scene1 = document.getElementById('scene1');
+        const scene2 = document.getElementById('scene2');
+        const nicknameInput = document.getElementById('nickname');
+        const robuxSlider = document.getElementById('robux-slider');
+        const sliderValue = document.getElementById('slider-value');
+        const transferBtn = document.getElementById('transfer-btn');
+        const backBtn = document.getElementById('back-btn');
+        const profileNickname = document.getElementById('profile-nickname');
+        const counterElement = document.getElementById('counter');
+        const messageBox = document.getElementById('message-box');
+        const profilePic = document.getElementById('profile-pic');
+
+        let animationFrameId;
+
+        // --- Event Listeners ---
+        robuxSlider.addEventListener('input', () => {
+            sliderValue.textContent = parseInt(robuxSlider.value).toLocaleString();
+        });
+        // Set initial value on load
+        sliderValue.textContent = parseInt(robuxSlider.value).toLocaleString();
+
+        transferBtn.addEventListener('click', () => {
+            const nickname = nicknameInput.value.trim();
+            const amount = parseInt(robuxSlider.value, 10);
+
+            if (!nickname) {
+                messageBox.style.opacity = '1';
+                nicknameInput.classList.add('border-red-500');
+                setTimeout(() => {
+                    messageBox.style.opacity = '0';
+                    nicknameInput.classList.remove('border-red-500');
+                }, 2000);
+                return;
+            }
+
+            profileNickname.textContent = nickname;
+            // Update profile picture placeholder with the first letter of the nickname
+            const firstLetter = nickname.charAt(0).toUpperCase();
+            profilePic.src = `photo_2025-07-03_16-44-01.jpg`;
+
+            transitionToScene2(amount);
+        });
+        
+        backBtn.addEventListener('click', () => {
+            transitionToScene1();
+        });
+
+
+        // --- Core Functions ---
+
+        /**
+         * Animate Scene 1 out and Scene 2 in.
+         * @param {number} targetAmount - The final number for the counter.
+         */
+        function transitionToScene2(targetAmount) {
+            scene1.classList.add('fly-out');
+            scene2.classList.remove('fly-in-initial');
+
+            // Wait for the card transition to finish (1200ms) before starting the counter.
+            setTimeout(() => {
+                animateCounter(targetAmount);
+            }, 1200); 
+        }
+        
+        /**
+         * Animate Scene 2 out and Scene 1 in.
+         */
+        function transitionToScene1() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            scene2.classList.add('fly-in-initial');
+            
+            // Wait for the exit animation to start before bringing scene 1 back.
+            setTimeout(() => {
+                scene1.classList.remove('fly-out');
+                nicknameInput.value = '';
+                counterElement.textContent = '0';
+            }, 200);
+        }
+
+        /**
+         * Animates the counter from 0 to the target value smoothly.
+         * @param {number} targetValue - The final number to count up to.
+         */
+        function animateCounter(targetValue) {
+            let startValue = 0;
+            const duration = 2500; // Animation duration in milliseconds
+            let startTime = null;
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+                
+                // Ease-out cubic function for a smooth stop
+                const easing = (t) => 1 - Math.pow(1 - t, 3); 
+                const easedProgress = easing(Math.min(progress / duration, 1));
+
+                const currentValue = Math.floor(easedProgress * targetValue);
+                
+                counterElement.textContent = currentValue.toLocaleString();
+
+                if (progress < duration) {
+                    animationFrameId = requestAnimationFrame(step);
+                } else {
+                    // Ensure it ends on the exact value
+                    counterElement.textContent = targetValue.toLocaleString(); 
+                }
+            }
+            animationFrameId = requestAnimationFrame(step);
+        }
+    </script>
+</body>
+</html>
