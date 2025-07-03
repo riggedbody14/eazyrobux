@@ -27,7 +27,7 @@
 
         .robux-icon {
             width: 80px;
-            height: auto;
+            height: 80px;
         }
 
         /* State for Scene 1 when it's flying away */
@@ -69,17 +69,20 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen font-ui">
+<body class="flex items-center justify-center min-h-screen font-ui p-4">
 
-    <div class="relative w-full max-w-md p-4 h-[580px]">
+    <!-- Changed container to be more flexible on smaller screens -->
+    <div class="relative w-full max-w-md h-auto min-h-[580px]">
         <!-- Scene 1: Input Form -->
         <div id="scene1" class="card-container absolute inset-0">
-            <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-lg h-full flex flex-col justify-center">
-                <div class="text-center mb-8">
+            <!-- Adjusted padding for mobile -->
+            <div class="bg-white border border-gray-300 rounded-lg p-6 sm:p-8 shadow-lg h-full flex flex-col justify-center">
+                <div class="text-center mb-6">
                     <!-- Roblox Icon -->
                     <img src="Robux_2019_Logo_gold.svg (1).png" alt="Robux Logo" class="mx-auto mb-4 robux-icon">
-                    <h1 class="font-display text-5xl text-gray-800">Robux Transfer</h1>
-                    <p class="text-gray-500 mt-2 text-lg">Enter details to proceed</p>
+                    <!-- Responsive font size -->
+                    <h1 class="font-display text-4xl sm:text-5xl text-gray-800">Robux Transfer</h1>
+                    <p class="text-gray-500 mt-2 text-base sm:text-lg">Enter details to proceed</p>
                 </div>
                 
                 <div class="mb-6">
@@ -89,13 +92,15 @@
 
                 <div class="mb-6">
                     <label for="robux-slider" class="block mb-2 text-sm font-semibold text-gray-600">Amount</label>
-                    <div class="flex items-center space-x-4">
-                        <input id="robux-slider" type="range" min="10" max="10000" value="800" step="10" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
-                        <span id="slider-value" class="font-display text-3xl text-blue-600 w-32 text-center flex-shrink-0">800</span>
+                    <div class="flex items-center space-x-2 sm:space-x-4">
+                        <!-- UPDATED: max, value, and step attributes for the slider -->
+                        <input id="robux-slider" type="range" min="1000" max="9999999" value="10000" step="1000" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
+                        <!-- UPDATED: Increased width to accommodate larger numbers -->
+                        <span id="slider-value" class="font-display text-2xl sm:text-3xl text-blue-600 w-40 text-center flex-shrink-0">10,000</span>
                     </div>
                 </div>
 
-                <button id="transfer-btn" class="font-display w-full bg-blue-500 hover:bg-blue-600 text-white text-2xl py-3 px-4 rounded-md transition duration-200 ease-in-out shadow-md">
+                <button id="transfer-btn" class="font-display w-full bg-blue-500 hover:bg-blue-600 text-white text-xl sm:text-2xl py-3 px-4 rounded-md transition duration-200 ease-in-out shadow-md">
                     Transfer Now!
                 </button>
 
@@ -107,20 +112,23 @@
 
         <!-- Scene 2: Profile & Counter -->
         <div id="scene2" class="card-container absolute inset-0 fly-in-initial">
-            <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-lg text-center h-full flex flex-col justify-around">
+            <div class="bg-white border border-gray-300 rounded-lg p-6 sm:p-8 shadow-lg text-center h-full flex flex-col justify-around">
                 
                 <div> <!-- Profile Section -->
-                    <img id="profile-pic" src="https://placehold.co/128x128/e3e3e3/393b3d?text=R" alt="Profile Picture" class="w-32 h-32 mx-auto rounded-full border-4 border-blue-400 shadow-md">
-                    <h2 id="profile-nickname" class="font-display mt-4 text-4xl text-gray-800"></h2>
-                    <p class="text-gray-500 text-lg">is receiving</p>
+                    <!-- Responsive profile picture -->
+                    <img id="profile-pic" src="https://placehold.co/128x128/e3e3e3/393b3d?text=R" alt="Profile Picture" class="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full border-4 border-blue-400 shadow-md">
+                    <!-- Responsive font size -->
+                    <h2 id="profile-nickname" class="font-display mt-4 text-3xl sm:text-4xl text-gray-800 break-words"></h2>
+                    <p class="text-gray-500 text-base sm:text-lg">is receiving</p>
                 </div>
 
                 <div> <!-- Counter Section -->
-                    <div id="counter" class="font-display text-8xl font-black text-blue-500 tracking-tighter">0</div>
-                    <div class="font-display text-3xl text-gray-500 -mt-2">ROBUX</div>
+                    <!-- Responsive font size -->
+                    <div id="counter" class="font-display text-6xl sm:text-8xl font-black text-blue-500 tracking-tighter">0</div>
+                    <div class="font-display text-2xl sm:text-3xl text-gray-500 -mt-2">ROBUX</div>
                 </div>
 
-                 <button id="back-btn" class="font-display w-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-2xl py-3 px-4 rounded-md transition duration-200 ease-in-out">
+                 <button id="back-btn" class="font-display w-full bg-gray-200 hover:bg-gray-300 text-gray-800 text-xl sm:text-2xl py-3 px-4 rounded-md transition duration-200 ease-in-out">
                      New Transfer
                  </button>
             </div>
